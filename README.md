@@ -49,3 +49,27 @@ Most playbooks are either too vague or too long. This set is designed for **live
 - Map each playbook to your SIEM detections and automation rules.
 - Add environment-specific contact trees and escalation numbers.
 - Add one-page “war room mode” checklists per playbook.
+
+
+## v2 operational upgrades
+
+- Added **RACI** matrix to each playbook.
+- Added **severity-aware communication templates** (Medium/High/Critical).
+- Added **war room one-page checklist** to each playbook.
+- Added **SIEM query stubs** (Sentinel KQL, Splunk SPL, Elastic KQL): see [`siem-query-stubs/`](siem-query-stubs/).
+
+## SIEM stub index
+
+- [01 Phishing](siem-query-stubs/01-phishing-email-triage-siem-stubs.md)
+- [02 BEC](siem-query-stubs/02-business-email-compromise-siem-stubs.md)
+- [03 Ransomware](siem-query-stubs/03-ransomware-response-siem-stubs.md)
+- [04 Endpoint malware](siem-query-stubs/04-endpoint-malware-response-siem-stubs.md)
+- [05 Impossible travel](siem-query-stubs/05-impossible-travel-signin-siem-stubs.md)
+- [06 Brute-force](siem-query-stubs/06-bruteforce-credential-stuffing-siem-stubs.md)
+- [07 Privileged misuse](siem-query-stubs/07-privileged-account-misuse-siem-stubs.md)
+- [08 Exfiltration](siem-query-stubs/08-data-exfiltration-siem-stubs.md)
+- [09 Cloud key exposure](siem-query-stubs/09-cloud-iam-key-exposure-siem-stubs.md)
+- [10 PowerShell/LOLBins](siem-query-stubs/10-powershell-lolbin-activity-siem-stubs.md)
+- [11 Web app attack](siem-query-stubs/11-web-app-attack-response-siem-stubs.md)
+- [12 DDoS](siem-query-stubs/12-ddos-service-degradation-siem-stubs.md)
+- [13 Supply chain](siem-query-stubs/13-third-party-supply-chain-compromise-siem-stubs.md)
