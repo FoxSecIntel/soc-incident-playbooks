@@ -73,3 +73,22 @@ Most playbooks are either too vague or too long. This set is designed for **live
 - [11 Web app attack](siem-query-stubs/11-web-app-attack-response-siem-stubs.md)
 - [12 DDoS](siem-query-stubs/12-ddos-service-degradation-siem-stubs.md)
 - [13 Supply chain](siem-query-stubs/13-third-party-supply-chain-compromise-siem-stubs.md)
+
+
+## v3 SOC god-tier upgrades
+
+- Added **environment profile** section to every playbook (tenant, critical assets, service scope).
+- Added **on-call and escalation directory** fields to every playbook.
+- Added **tooling map** fields (SIEM, EDR, IAM, ticketing, evidence store).
+- Added **pre-flight incident variables** section for rapid war-room setup.
+- Added reusable templates under [`templates/`](templates/):
+  - [Environment profile template](templates/environment-profile-template.md)
+  - [Severity/SLA matrix](templates/severity-sla-matrix.md)
+  - [War room roles template](templates/war-room-roles-template.md)
+
+### Fast rollout path
+
+1. Complete `templates/environment-profile-template.md` once.
+2. Copy values into each playbook’s environment section.
+3. Confirm SLA matrix with leadership and legal.
+4. Run one tabletop exercise per high/critical playbook.

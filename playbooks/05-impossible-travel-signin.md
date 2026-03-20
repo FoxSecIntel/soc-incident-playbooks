@@ -4,6 +4,48 @@
 - **Target SLA:** Acknowledge in 15 minutes, containment in 2 hours
 - **MITRE ATT&CK (typical):** T1078, T1098
 
+## Environment profile (complete before live use)
+
+- **Organisation / BU:** `<org-or-bu>`
+- **Primary tenant / account / subscription:** `<tenant-id-or-account-id>`
+- **Critical asset group(s):** `<tier0-assets>`
+- **Business-critical services:** `<service-names>`
+- **Data classes in scope:** `<pii|pci|phi|ip|internal>`
+- **Time zone for incident clock:** `<tz>`
+- **Incident bridge / war room link:** `<bridge-url>`
+
+## On-call and escalation directory
+
+- **L1/L2 SOC on-call:** `<name> <contact>`
+- **Incident Commander:** `<name> <contact>`
+- **Identity / IAM owner:** `<name> <contact>`
+- **Cloud / Platform owner:** `<name> <contact>`
+- **Network / Edge owner:** `<name> <contact>`
+- **Endpoint / EDR owner:** `<name> <contact>`
+- **Legal / Privacy:** `<name> <contact>`
+- **Comms / PR:** `<name> <contact>`
+- **Executive escalation:** `<name> <contact>`
+
+## Tooling map (your environment)
+
+- **SIEM:** `<sentinel|splunk|elastic|other>`
+- **EDR/XDR:** `<tool>`
+- **Email security stack:** `<tool>`
+- **IAM / SSO provider:** `<tool>`
+- **Cloud providers:** `<aws|azure|gcp|hybrid>`
+- **Ticketing / case system:** `<tool>`
+- **Forensics evidence store:** `<location>`
+
+## Pre-flight incident variables
+
+- **Incident ID:** `<id>`
+- **Incident severity:** `<sev>`
+- **Detection source / rule:** `<rule-name-or-id>`
+- **Initial detection time (UTC):** `<timestamp>`
+- **Known affected user(s):** `<users>`
+- **Known affected host(s):** `<hosts>`
+- **Known IoCs:** `<ioc-list>`
+
 ## Trigger conditions
 
 - Alert or analyst observation indicates this scenario.
