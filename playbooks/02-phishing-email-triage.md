@@ -1,8 +1,9 @@
 # Phishing Email Triage and Response
 
 - **Severity baseline:** Medium
-- **Target SLA:** Acknowledge in 15 minutes, containment in 1 hour
-- **MITRE ATT&CK (typical):** T1566, T1204
+- **Target SLA:** Acknowledge in 15 minutes, containment in 30 minutes
+- **MITRE ATT&CK (typical):** T1566, T1204, T1114, T1078
+- **OWASP alignment (adjacent):** Social engineering and identity abuse pathways
 
 ## Environment profile (complete before live use)
 
@@ -13,6 +14,7 @@
 - **Data classes in scope:** `<pii|pci|phi|ip|internal>`
 - **Time zone for incident clock:** `<tz>`
 - **Incident bridge / war room link:** `<bridge-url>`
+
 ## On-call and escalation directory
 
 - **L1/L2 SOC on-call:** `<name> <contact>`
@@ -24,15 +26,19 @@
 - **Legal / Privacy:** `<name> <contact>`
 - **Comms / PR:** `<name> <contact>`
 - **Executive escalation:** `<name> <contact>`
+
 ## Tooling map (your environment)
 
 - **SIEM:** `<sentinel|splunk|elastic|other>`
 - **EDR/XDR:** `<tool>`
-- **Email security stack:** `<tool>`
+- **Email security stack / SEG:** `<tool>`
 - **IAM / SSO provider:** `<tool>`
 - **Cloud providers:** `<aws|azure|gcp|hybrid>`
 - **Ticketing / case system:** `<tool>`
 - **Forensics evidence store:** `<location>`
+- **Threat intel platform (TIP):** `<tool>`
+- **Mailbox search and purge tooling:** `<tool>`
+
 ## Pre-flight incident variables
 
 - **Incident ID:** `<id>`
@@ -42,86 +48,110 @@
 - **Known affected user(s):** `<users>`
 - **Known affected host(s):** `<hosts>`
 - **Known IoCs:** `<ioc-list>`
+
 ## Trigger conditions
 
-- Alert or analyst observation indicates this scenario.
-- Confidence is medium+ or business impact is plausible.
+- User report, SEG alert, or SOC analytics indicate phishing or social engineering.
+- Confidence is medium+, or business impact is plausible.
+- Message may have no malicious attachment/link but requests sensitive or financial action.
 
 - **Decision logic (L1):**
   - IF alert source is trusted and confidence >= medium THEN create incident and continue triage.
-  - ELSE continue validation workflow (artifact checks, secondary logs, intel lookup) for max 15 minutes.
+  - ELSE continue validation workflow for max 15 minutes.
   - IF confirmed compromise THEN escalate to Tier 2 immediately.
-  - IF vendor involvement not confirmed THEN keep incident in validation branch and request vendor telemetry.
+  - IF vendor involvement not confirmed THEN continue validation workflow.
 - **Severity and confidence gates:**
-  - Critical: active compromise + privileged access or regulated data risk.
-  - High: credible compromise with lateral movement potential, no confirmed data loss.
-  - Medium: suspicious activity with partial evidence, no confirmed impact.
+  - **Critical:** confirmed credential theft, payment diversion, privileged account impact, or broad campaign spread.
+  - **High:** strong malicious indicators with user interaction, no confirmed takeover yet.
+  - **Medium:** suspicious campaign pattern with constrained impact.
+  - **Low:** false positive with no campaign indicators.
 - **Target SLA:** detection to triage <= 15 minutes.
+
 ## Immediate actions (0–15 min)
 
 1. Validate alert fidelity and asset criticality.
 2. Open incident ticket and assign incident owner.
-3. Capture volatile evidence (logs, process tree, account activity, network telemetry).
-4. Apply no-regret controls that do not destroy evidence.
+3. Preserve raw message evidence: headers, body, attachments, URLs, Message-ID.
+4. Trigger campaign scoping search across tenant mailboxes.
 5. Notify duty lead if blast radius is unclear.
 
-- **IF / THEN / ELSE flow:**
-  - IF identity compromise indicators present THEN force token revocation + password reset path.
-  - IF endpoint compromise indicators present THEN isolate host via EDR network containment.
-  - ELSE keep host online and collect volatile evidence first.
+- **Low-risk actions that should be automated immediately:**
+  - URL/domain reputation checks using VirusTotal, URLScan, passive DNS and TIP.
+  - **New-Born Domain** checks:
+    - IF domain age < 30 days THEN increase risk score one tier.
+    - IF domain age < 7 days and financial/credential request exists THEN classify High pending further proof.
+  - Tenant-wide similarity search:
+    - sender/reply-to patterns
+    - subject/body fingerprint
+    - URL path and tracking token reuse
+  - Auto-quarantine known matching messages across all mailboxes.
+- **High-risk actions requiring human decision:**
+  - VIP sender verification via out-of-band identity confirmation.
+  - Determining AI-generated social engineering where language is flawless but intent is malicious.
+  - Root cause analysis of SEG/gateway miss before permanent policy changes.
 - **Business impact translation:**
-  - Record customer impact status (none / degraded / exposed).
-  - Record regulatory trigger status (none / possible / likely) and notify Legal on possible/likely.
-- **Automation vs human:**
-  - Automate IOC enrichment, WHOIS/reputation lookups, and SIEM pivot queries.
-  - Human approval required for production containment affecting customer services.
-- **Failure modes:** false-positive isolation, delayed ticket ownership, evidence overwrite; detect via missing timeline updates >10 min.
+  - Data exposure risk: classify affected information.
+  - Customer impact: identify exposed user population.
+  - Regulatory implications: determine if legal notification thresholds may be met.
+
 ## Containment
 
-- Isolate affected identities/assets/workloads.
-- Block known malicious indicators (domains, hashes, IPs, senders, URLs).
-- Force credential reset/token revocation where identity abuse is likely.
-- Add temporary detections for related indicators.
+- Isolate affected identities, mail artefacts, and malicious infrastructure indicators.
+- Execute broad-spectrum tenant-wide containment.
 
+- **Broad containment controls:**
+  - Purge matching and near-matching messages from all mailboxes.
+  - Block sender domains, reply-to domains, malicious URLs, and attachment hashes.
+  - Revoke tokens and reset credentials for users who clicked/submitted credentials.
+  - Disable suspicious OAuth applications and mailbox forwarding rules.
 - **Decision logic:**
-  - IF blast radius includes privileged identities or Tier-0 systems THEN escalate severity to Critical and page Incident Commander.
-  - IF compromise remains unconfirmed after containment step THEN maintain reversible controls and continue validation.
-- **Time-bound actions:** triage to containment <= 30 minutes; escalation <= 10 minutes after critical trigger.
-- **Tool mapping:** SIEM (scope validation), EDR/XDR (host isolation), IAM/SSO (session revocation), CASB/SaaS logs (cloud session blocks), TIP (IOC confidence).
-- **Business impact owners to inform:** SOC Lead, Service Owner, CISO; Legal if potential data exposure.
-- **Failure modes:** over-containment causing outage, under-containment allowing spread; detect by new related alerts after containment window.
+  - IF blast radius includes privileged users or finance/payment workflows THEN escalate severity to Critical.
+  - IF compromise remains unconfirmed THEN use reversible controls and continue validation.
+  - IF campaign remains active after first purge THEN tighten SEG policy and repeat sweep.
+- **Time-bound actions:** triage to containment <= 30 minutes, escalation <= 10 minutes after critical trigger.
+- **Tool mapping:** SIEM, SEG, EDR/XDR, IAM/SSO, TIP, SaaS audit logs.
+- **Who to inform:** SOC lead, service owner, CISO; Legal/Privacy if potential regulated data risk.
+- **Failure modes:** over-containment causing business disruption, under-containment allowing continued spread.
+
 ## Investigation and scoping
 
-- Determine patient zero, initial access vector, and timeline.
-- Identify all touched systems/accounts/data.
-- Confirm whether privileged access or sensitive data was involved.
-- Separate confirmed compromise from suspicious-but-unconfirmed noise.
+- Determine patient zero, campaign origin, and full blast radius.
+- Prioritise campaign analysis over single-message handling.
 
-- **Required enrichments:** threat intel campaign correlation, vendor risk profile, actor TTP alignment, known exploit-chain check.
-- **Blast radius estimation checklist:**
-  - Affected systems count and business criticality tier.
-  - Privileged account exposure confirmed/suspected.
-  - Lateral movement indicators (remote admin, token misuse, anomalous east-west traffic).
+- **Campaign scoping requirements:**
+  - Identify all recipients, clickers, repliers, and credential submitters.
+  - Identify linked infrastructure: domains, redirectors, cloud-hosted pages.
+  - Identify temporal clusters and variant templates.
+- **AI-augmented phishing analysis:**
+  - Perform **semantic anomaly** review:
+    - unusual urgency or authority pressure
+    - process bypass requests
+    - polished language inconsistent with sender history
+  - Analyse **tone** for internal impersonation and business-context mimicry.
+  - Treat no-link/no-attachment payment or credential requests as high suspicion.
 - **Decision logic:**
   - IF privileged access confirmed THEN Critical severity and Tier 2/IR takeover.
-  - IF only isolated single asset and no privilege escalation THEN remain High/Medium per confidence.
+  - IF only isolated user with no interaction THEN maintain Medium with monitoring.
 - **Automation vs human:**
-  - Automate timeline stitching and entity correlation.
-  - Human validates root cause and compromise narrative.
+  - Automate timeline stitching, recipient mapping, IOC correlation.
+  - Human validates intent and impersonation plausibility.
+
 ## Eradication and recovery
 
-- Remove persistence, malicious artefacts, and unauthorised access paths.
-- Patch/harden control gaps exploited in the incident.
-- Recover systems safely and monitor for re-entry.
-- Run post-recovery validation checks.
+- Remove persistence and residual access created by phishing workflow.
+- Restore normal operations with strengthened controls.
 
 - **Deterministic flow:**
-  - IF persistence mechanism identified THEN remove + verify via second-source telemetry.
-  - IF patch/control not available THEN apply compensating controls and risk acceptance approval.
-  - ELSE patch, rotate secrets, and re-baseline detections.
-- **SLA target:** containment to recovery plan <= 4 hours (Critical) / <= 8 hours (High).
-- **Business impact:** require service owner sign-off before restoring externally exposed workloads.
-- **Failure modes:** incomplete eradication, reinfection, stale credentials; detect via 24h enhanced monitoring and regression checks.
+  - IF mailbox rule abuse identified THEN remove rules and re-audit mailbox delegates.
+  - IF OAuth abuse identified THEN revoke grants and enforce consent controls.
+  - IF credentials exposed THEN reset passwords, revoke sessions, enforce phishing-resistant MFA.
+- **Recovery checks:**
+  - Validate no further message variants are being delivered.
+  - Validate affected users have clean sign-in activity.
+  - Validate payment and supplier-change workflows are restored with additional approvals.
+- **SLA target:** containment to recovery plan <= 4 hours for Critical, <= 8 hours for High.
+- **Failure modes:** hidden forwarding rules, delayed user reporting, token persistence.
+
 ## Comms and escalation
 
 - Internal: SOC lead, IT ops, identity, legal/compliance as required.
@@ -129,12 +159,13 @@
 - Use concise updates: what happened, impact, actions, next checkpoint.
 
 - **Who to inform and when:**
-  - Immediate: SOC Lead + Incident Commander on confirmed compromise.
-  - <=30 min: CISO / Security leadership for High/Critical incidents.
-  - Legal/Privacy immediately on potential regulated data impact.
-  - Vendor security contacts when third-party dependency is implicated.
-- **Escalation logic:** IF evidence quality drops or scope expands rapidly THEN escalate one severity level and increase update cadence.
-- **Update cadence:** Critical every 30 min, High every 60 min, Medium every 120 min.
+  - Immediate: SOC lead and Incident Commander on confirmed compromise.
+  - <=30 minutes: CISO/security leadership for High/Critical.
+  - Immediate: Legal/Privacy when regulated data risk is possible.
+  - Finance leadership for payment-diversion campaigns.
+- **Escalation logic:** IF scope expands rapidly or evidence quality degrades THEN escalate one severity level.
+- **Update cadence:** Critical every 30 minutes, High every 60 minutes, Medium every 120 minutes.
+
 ## Evidence and documentation
 
 - Preserve raw logs, timeline, IoCs, and decision points.
@@ -144,9 +175,16 @@
 - **Standardised outputs (mandatory):**
   - Incident summary: `<what happened> <who affected> <impact> <current status> <next action>`.
   - Timeline format: `UTC timestamp | actor/system | action | evidence link | analyst`.
-  - Evidence checklist: alerts, raw logs, host artefacts, network telemetry, IAM events, IOC list, containment commands, approvals.
-- **Automation:** auto-export SIEM query results and hash artefacts to evidence store.
-- **Failure modes:** broken chain-of-custody, missing timestamps; detect via case QA before closure.
+  - Evidence checklist:
+    - headers and raw MIME
+    - URL/domain enrichment
+    - mailbox search/purge results
+    - click/credential telemetry
+    - token revocation and reset logs
+    - approvals and communications logs
+- **Automation:** auto-export SIEM and SEG query artefacts to evidence store.
+- **Failure modes:** chain-of-custody gaps, missing timestamps, partial tenant search.
+
 ## Exit criteria
 
 - Threat activity stopped and validated.
@@ -155,13 +193,14 @@
 - Lessons learned captured with dated action items.
 
 - **Decision closure gates:**
-  - IF any unresolved high-risk indicator remains THEN incident cannot close.
-  - IF vendor confirmation pending for key indicator THEN keep case in monitoring state, not closed.
+  - IF unresolved high-risk indicators remain THEN incident cannot close.
+  - IF campaign origin and spread are not fully scoped THEN incident cannot close.
 - **Post-incident improvement loop (required):**
-  - Reassess vendor trust/risk tier and contract notification requirements.
-  - Document control gaps and assign owners + due dates.
-  - Add/adjust detections, SOAR play steps, and suppression rules.
-  - Update this playbook with lessons learned within 5 business days.
+  - Assess why SEG or AI filters failed to intercept message variants.
+  - Update campaign detections and similarity-matching rules.
+  - Improve VIP verification and payment-change controls.
+  - Update this playbook and SOAR workflow within 5 business days.
+
 ## RACI (default)
 
 | Function | Responsibility |
@@ -171,20 +210,22 @@
 | IT / Platform / Cloud Ops | **Responsible** for containment and recovery actions |
 | Legal / Compliance / Privacy | **Consulted** when notification or regulatory impact is possible |
 | Business Owner / Service Owner | **Informed** on impact, ETA, and closure status |
+
 ## Communication templates
 
-### Internal update (Medium)
-`Security event update: <scenario> triage in progress. Current assessment: <status>. Actions underway: <actions>. Next update in 2 hours or sooner on escalation.`
+### Internal update (Critical)
+`Incident update: phishing campaign active. Current impact: <impact>. Scope: <scope>. Containment: <status>. Next update in 30 minutes.`
 
-### Stakeholder update (Medium)
-`A security event has been detected and is being assessed. No confirmed major impact at this time. We will share updates if risk level changes.`
+### Stakeholder update (Critical)
+`We are responding to a phishing campaign affecting <service/group>. Current customer impact: <impact/none confirmed>. Immediate controls are in place and investigation is ongoing. Next update by <time>.`
+
 ## War room mode (one-page checklist)
 
 - [ ] Incident owner assigned
 - [ ] Timeline started (UTC)
-- [ ] Affected assets/accounts list created
-- [ ] Containment actions approved and executed
-- [ ] Detection coverage expanded for related IoCs
+- [ ] Blast radius search completed across tenant mailboxes
+- [ ] Tenant-wide quarantine and block actions executed
+- [ ] Privileged and finance users verified and protected
 - [ ] Exec/stakeholder update sent at agreed interval
 - [ ] Recovery validation completed
-- [ ] Post-incident actions captured with owners and due dates
+- [ ] Detection and playbook updates captured with owners and due dates
