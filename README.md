@@ -17,21 +17,23 @@ Most playbooks are either too vague or too long. This set is designed for **live
 3. Work top-to-bottom through containment, investigation, and recovery.
 4. Complete closure actions and lessons learned.
 
-## Playbook Index (13)
+## Playbook Index (14)
 
-1. [Phishing Email Triage and Response](playbooks/01-phishing-email-triage.md)
-2. [Business Email Compromise (BEC)](playbooks/02-business-email-compromise.md)
-3. [Ransomware Incident Response](playbooks/03-ransomware-response.md)
-4. [Endpoint Malware Detection and Containment](playbooks/04-endpoint-malware-response.md)
-5. [Impossible Travel / Suspicious Sign-in](playbooks/05-impossible-travel-signin.md)
-6. [Brute-force / Credential Stuffing](playbooks/06-bruteforce-credential-stuffing.md)
-7. [Privileged Account Misuse](playbooks/07-privileged-account-misuse.md)
-8. [Data Exfiltration Suspected](playbooks/08-data-exfiltration.md)
-9. [Cloud IAM Key Exposure](playbooks/09-cloud-iam-key-exposure.md)
-10. [Suspicious PowerShell / LOLBin Activity](playbooks/10-powershell-lolbin-activity.md)
-11. [Web Application Attack (WAF/Logs)](playbooks/11-web-app-attack-response.md)
-12. [DDoS Service Degradation](playbooks/12-ddos-service-degradation.md)
-13. [Third-party / Supply-chain Compromise](playbooks/13-third-party-supply-chain-compromise.md)
+1. [AI LLM Security Incident Response](playbooks/01-ai-llm-security-incident-response.md)
+2. [Phishing Email Triage and Response](playbooks/02-phishing-email-triage.md)
+3. [Business Email Compromise (BEC)](playbooks/03-business-email-compromise.md)
+4. [Ransomware Incident Response](playbooks/04-ransomware-response.md)
+5. [Endpoint Malware Detection and Containment](playbooks/05-endpoint-malware-response.md)
+6. [Impossible Travel / Suspicious Sign-in](playbooks/06-impossible-travel-signin.md)
+7. [Brute-force / Credential Stuffing](playbooks/07-bruteforce-credential-stuffing.md)
+8. [Privileged Account Misuse](playbooks/08-privileged-account-misuse.md)
+9. [Data Exfiltration Suspected](playbooks/09-data-exfiltration.md)
+10. [Cloud IAM Key Exposure](playbooks/10-cloud-iam-key-exposure.md)
+11. [Suspicious PowerShell / LOLBin Activity](playbooks/11-powershell-lolbin-activity.md)
+12. [Web Application Attack (WAF/Logs)](playbooks/12-web-app-attack-response.md)
+13. [DDoS Service Degradation](playbooks/13-ddos-service-degradation.md)
+14. [Third-party / Supply-chain Compromise](playbooks/14-third-party-supply-chain-compromise.md)
+
 
 ## Design standard used in every playbook
 
@@ -60,19 +62,20 @@ Most playbooks are either too vague or too long. This set is designed for **live
 
 ## SIEM stub index
 
-- [01 Phishing](siem-query-stubs/01-phishing-email-triage-siem-stubs.md)
-- [02 BEC](siem-query-stubs/02-business-email-compromise-siem-stubs.md)
-- [03 Ransomware](siem-query-stubs/03-ransomware-response-siem-stubs.md)
-- [04 Endpoint malware](siem-query-stubs/04-endpoint-malware-response-siem-stubs.md)
-- [05 Impossible travel](siem-query-stubs/05-impossible-travel-signin-siem-stubs.md)
-- [06 Brute-force](siem-query-stubs/06-bruteforce-credential-stuffing-siem-stubs.md)
-- [07 Privileged misuse](siem-query-stubs/07-privileged-account-misuse-siem-stubs.md)
-- [08 Exfiltration](siem-query-stubs/08-data-exfiltration-siem-stubs.md)
-- [09 Cloud key exposure](siem-query-stubs/09-cloud-iam-key-exposure-siem-stubs.md)
-- [10 PowerShell/LOLBins](siem-query-stubs/10-powershell-lolbin-activity-siem-stubs.md)
-- [11 Web app attack](siem-query-stubs/11-web-app-attack-response-siem-stubs.md)
-- [12 DDoS](siem-query-stubs/12-ddos-service-degradation-siem-stubs.md)
-- [13 Supply chain](siem-query-stubs/13-third-party-supply-chain-compromise-siem-stubs.md)
+- [01 AI LLM incident](siem-query-stubs/01-ai-llm-security-incident-response-siem-stubs.md)
+- [02 Phishing](siem-query-stubs/02-phishing-email-triage-siem-stubs.md)
+- [03 BEC](siem-query-stubs/03-business-email-compromise-siem-stubs.md)
+- [04 Ransomware](siem-query-stubs/04-ransomware-response-siem-stubs.md)
+- [05 Endpoint malware](siem-query-stubs/05-endpoint-malware-response-siem-stubs.md)
+- [06 Impossible travel](siem-query-stubs/06-impossible-travel-signin-siem-stubs.md)
+- [07 Brute-force](siem-query-stubs/07-bruteforce-credential-stuffing-siem-stubs.md)
+- [08 Privileged misuse](siem-query-stubs/08-privileged-account-misuse-siem-stubs.md)
+- [09 Exfiltration](siem-query-stubs/09-data-exfiltration-siem-stubs.md)
+- [10 Cloud key exposure](siem-query-stubs/10-cloud-iam-key-exposure-siem-stubs.md)
+- [11 PowerShell/LOLBins](siem-query-stubs/11-powershell-lolbin-activity-siem-stubs.md)
+- [12 Web app attack](siem-query-stubs/12-web-app-attack-response-siem-stubs.md)
+- [13 DDoS](siem-query-stubs/13-ddos-service-degradation-siem-stubs.md)
+- [14 Supply chain](siem-query-stubs/14-third-party-supply-chain-compromise-siem-stubs.md)
 
 
 ## v3 SOC god-tier upgrades
