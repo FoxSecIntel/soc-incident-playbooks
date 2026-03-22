@@ -1,4 +1,5 @@
 # Autonomous Agent Hijack: Indirect Prompt Injection with Tool-Use Abuse
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** Critical
 - **Target SLA:** Acknowledge in 5 minutes, containment in 15 minutes

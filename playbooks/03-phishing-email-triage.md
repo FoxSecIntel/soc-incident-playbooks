@@ -1,4 +1,5 @@
 # Phishing Email Triage and Response
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** Medium
 - **Target SLA:** Acknowledge in 15 minutes, containment in 30 minutes

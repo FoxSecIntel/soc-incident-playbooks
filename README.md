@@ -37,6 +37,12 @@ Most playbooks are either too vague or too long. This set is designed for **live
 16. [Third-party / Supply-chain Compromise](playbooks/16-third-party-supply-chain-compromise.md)
 
 
+
+## Navigation helpers
+
+- [Severity index](playbooks/SEVERITY_INDEX.md)
+- [Playbook template](templates/playbook-template.md)
+
 ## Design standard used in every playbook
 
 - **Priority and SLA** (what must happen now)

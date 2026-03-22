@@ -1,4 +1,5 @@
 # Brute-force / Credential Stuffing
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** High
 - **Target SLA:** Acknowledge in 10 minutes, containment in 1 hour

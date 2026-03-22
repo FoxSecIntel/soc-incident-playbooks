@@ -1,4 +1,5 @@
 # Third-party / Supply-chain Compromise
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** Critical
 - **Target SLA:** Acknowledge in 5 minutes, containment in 30 minutes

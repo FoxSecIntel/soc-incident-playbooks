@@ -1,4 +1,5 @@
 # AI LLM Security Incident Response: Indirect Prompt Injection, Model Poisoning, Sensitive Data Leakage
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** High
 - **Target SLA:** Acknowledge in 10 minutes, containment in 30 minutes

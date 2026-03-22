@@ -1,4 +1,5 @@
 # Impossible Travel / Suspicious Sign-in
+- **Last reviewed:** 2026-03-22
 
 - **Severity baseline:** Medium
 - **Target SLA:** Acknowledge in 15 minutes, containment in 2 hours
